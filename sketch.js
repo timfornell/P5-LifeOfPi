@@ -3,12 +3,15 @@ let index;
 let piDigits;
 let digitsToRead;
 let radius;
+let radiusIncrease;
 let previousAngle;
 let angleIncrement;
 let drawing;
 let goalAngle;
 let direction;
-let currentAngle
+let currentAngle;
+let digits = [];
+let num = 0;
 
 function preload() {
   pi = loadStrings("Pi.txt");
@@ -24,43 +27,62 @@ function setup() {
   index = 0;
   piDigits = pi[0].length;
   digitsToRead = 3;
-  radius = 100;
+  radius = 10;
+  radiusIncrease = 10;
   previousAngle = 0;
-  angleIncrement = 1;
+  angleIncrement = 10;
   drawing = false;
 }
 
 function draw() {
   if (index < piDigits && !drawing) {
-    var digits = [];
-    for (i = 0; i < digitsToRead; i++) {
-      digits.push(pi[0][index + i]);
+    if (digits.length == 0) {
+      for (i = 0; i < digitsToRead; i++) {
+        digits.push(pi[0][index + i]);
+      }
+    } else {
+      index += 1;
+      digits.shift()
+      digits.push(pi[0][index]);
     }
 
-    goalAngle = (join(digits, "") % 360);
-    if (radius <= width && radius <= height && radius > 0) {
-      drawing = true;
+  goalAngle = (join(digits, "") % 360);
+  // Add the strokeweight
+  if (radius + 4 <= width && radius <= height && radius > 0) {
+    drawing = true;
 
-      console.log(previousAngle, goalAngle);
-      direction = angleIncrement;
+    direction = angleIncrement;
+    var diff = previousAngle - goalAngle;
+    if (previousAngle > goalAngle) {
+      direction = - angleIncrement;
+    }
+
+    // Make sure the "closest" route is always taken
+    if (abs(diff) >= 180) {
       if (previousAngle > goalAngle) {
-        direction = - angleIncrement;
+        goalAngle += 360;
+      } else {
+        previousAngle += 360;
       }
 
-      currentAngle = previousAngle;
+      direction = direction * (- 1);
     }
+
+    console.log(previousAngle, goalAngle, diff);
+    currentAngle = previousAngle;
   }
+}
 
-  if (drawing) {
-    stroke(goalAngle, 360, 360);
+if (drawing) {
+  stroke(goalAngle, 360, 360);
 
-    if ((currentAngle >= goalAngle && direction > 0) || (currentAngle <= goalAngle && direction < 0)) {
+  if ((currentAngle >= goalAngle && direction > 0) || (currentAngle <= goalAngle && direction < 0)) {
       drawArc();
-      previousAngle = goalAngle;
-      radius += 20;
-      index += digitsToRead;
+      previousAngle = goalAngle % 360;
+      radius += radiusIncrease;
       drawing = false;
     } else {
+      num += 1;
       drawArc();
       previousAngle = currentAngle;
       currentAngle += direction;
