@@ -1,9 +1,6 @@
-class CircularVisualization {
+class CircularVisualization extends Visualizer{
    constructor(pi) {
-      this.pi = pi;
-      this.piDigits = pi[0].length;
-      this.index = 0;
-      this.digitsToRead = 3;
+      super(pi, 3);
 
       this.radius = 10;
       this.radiusIncrease = 10;
@@ -15,8 +12,6 @@ class CircularVisualization {
 
       this.drawing = false;
       this.direction;
-      this.digits = [];
-
    }
 
    draw() {
@@ -24,18 +19,8 @@ class CircularVisualization {
       fill(0, 0, 0, 0);
       strokeWeight(4);
 
-      if (this.index < this.piDigits && !this.drawing) {
-         if (this.digits.length == 0) {
-            for (let i = 0; i < this.digitsToRead; i++) {
-               this.digits.push(pi[0][this.index + i]);
-            }
-         } else {
-            this.index += 1;
-            this.digits.shift()
-            this.digits.push(pi[0][this.index]);
-         }
-
-         this.goalAngle = (join(this.digits, "") % 360);
+      if (this.getNewDigitsFromPi(true) && !this.drawing) {
+         this.goalAngle =  this.getJoinedDigitsAsString() % 360;
          // Compensate for the strokeweight
          if (this.radius + 4 <= width && this.radius <= height && this.radius > 0) {
             this.drawing = true;

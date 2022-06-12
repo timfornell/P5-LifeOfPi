@@ -13,7 +13,9 @@ function setup() {
 
    chosenVisualizer = "CircularVisualization";
    visualizers = {
-      CircularVisualization: new CircularVisualization(pi)
+      CircularVisualization: new CircularVisualization(pi),
+      PulsingCircle: new PulsingCircle(pi, true),
+      PulsingCircleStaticBackground: new PulsingCircle(pi, false)
    };
 
    textAlign(CENTER);
@@ -26,6 +28,7 @@ function setup() {
       dropDrown.option(viz);
    }
 
+   dropDrown.selected("PulsingCircleStaticBackground");
    chosenVisualizer = "None";
 }
 
